@@ -1,25 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import { createGlobalStyle, ThemeProvider } from "styled-components";
+import { Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import LightTheme, { ITheme } from "./theme/light";
+import DarkTheme from "./theme/dark";
+const GlobalStyle = createGlobalStyle`
+  body{
+    background-color: ${(p) => p.theme.bodyBackgroundColor};
+    min-height: 100vh;
+    margin: 0;
+    color: ${(p) => p.theme.bodyFontColor};
+    font-family: 'Kaushan Script';
+  }
+`;
 
 function App() {
+  const [theme, setTheme] = useState<ITheme>(LightTheme);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider
+      theme={{
+        ...theme,
+        setTheme: () =>
+          setTheme((s) => (s.id === "light" ? DarkTheme : LightTheme)),
+      }}
+    >
+      <GlobalStyle />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </ThemeProvider>
   );
 }
 
